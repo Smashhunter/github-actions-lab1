@@ -52,14 +52,15 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"
-          
+          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"   
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
 
       - name: Build
-      - run: cmake --build .
-      - run: cmake --build . --target test
-      - run: cmake --build . --target package
+        run: |
+          cmake --build .
+          cmake --build . --target test
+          cmake --build . --target package
+        
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
