@@ -44,16 +44,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Install vcpkg
+        run: |
+          git clone https://github.com/Microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
 
-      - name: Install Boost via Chocolatey
-        run: choco install boost-msvc-14.2 -y
+      - name: Cache vcpkg
+        uses: actions/cache@v3
+        with:
+          path: vcpkg/installed
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
+          restore-keys: ${{ runner.os }}-vcpkg-
+
+      - name: Install dependencies
+        run: .\vcpkg\vcpkg install --triplet=x64-windows
 
       - name: Configure CMake
         run: |
           mkdir build
           cd build
-          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"   
+          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"  
+
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
+
 
       - name: Build
         run: |
