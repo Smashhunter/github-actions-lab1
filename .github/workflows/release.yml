@@ -40,8 +40,8 @@ jobs:
           asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
   build-windows:
-  runs-on: windows-latest
-  steps:
+    runs-on: windows-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
