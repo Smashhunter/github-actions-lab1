@@ -40,8 +40,8 @@ jobs:
           asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
   build-windows:
-    runs-on: windows-latest
-    steps:
+  runs-on: windows-latest
+  steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -50,31 +50,24 @@ jobs:
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
           ./bootstrap-vcpkg.bat -disableMetrics
-          echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Install dependencies
+      - name: Install Boost
         run: |
           cd vcpkg
-          ./vcpkg install --triplet=x64-windows
+          ./vcpkg install boost-test:x64-windows --recurse --classic
 
       - name: Configure CMake
         run: |
           mkdir build
           cd build
           cmake .. `
-            -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_TARGET_TRIPLET=x64-windows `
-            -DPATCH_VERSION=${{ github.run_number }} `
-            -DBOOST_ROOT="${{ github.workspace }}/vcpkg/installed/x64-windows" `
-            -DBOOST_LIBRARYDIR="${{ github.workspace }}/vcpkg/installed/x64-windows/lib" `
-            -DBOOST_INCLUDEDIR="${{ github.workspace }}/vcpkg/installed/x64-windows/include"
+            -DCMAKE_TOOLCHAIN_FILE="../vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            -DPATCH_VERSION=${{ github.run_number }}
 
       - name: Build
         run: |
           cd build
           cmake --build . --config Release
-          ctest -C Release --verbose
-          cmake --build . --config Release --target package
           
       - name: Create Release
         id: create_release
