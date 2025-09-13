@@ -59,7 +59,11 @@ endif()
 
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
 
-set(CPACK_GENERATOR DEB)
+if (MSVC)
+    set(CPACK_GENERATOR ZIP)
+else ()
+    set(CPACK_GENERATOR DEB)
+endif ()
 
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
@@ -72,3 +76,4 @@ include(CPack)
 enable_testing()
 
 add_test(test_version test_version)
+
