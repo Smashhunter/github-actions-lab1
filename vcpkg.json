@@ -1,3 +1,9 @@
 {
-  "dependencies": ["boost-test"]
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "dependencies": [
+    {
+      "name": "boost-test",
+      "version>=": "1.83.0"
+    }
+  ]
 }
