@@ -21,7 +21,6 @@ jobs:
       - run: cmake --build build --target test
       - run: cmake --build build --target package
 
-      - run: ls ./ ; ls build
       
       - name: Upload Release Asset
         env:
@@ -44,9 +43,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -B build -S . -G "Visual Studio 17 2022" -A x64
-            -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake
-            -DPATCH_VERSION=${{ github.run_number }}
+          cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake -DPATCH_VERSION=${{ github.run_number }}
 
       - name: Build
         run: |
