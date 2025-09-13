@@ -45,11 +45,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Install vcpkg
+      - name: Install vcpkg and dependencies
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
-          .\bootstrap-vcpkg.bat
+          ./bootstrap-vcpkg.bat
+          ./vcpkg install boost-test:x64-windows
 
       - name: Cache vcpkg
         uses: actions/cache@v3
@@ -61,18 +62,18 @@ jobs:
       - name: Install dependencies
         run: .\vcpkg\vcpkg install --triplet=x64-windows
 
-      - name: Configure CMake
+      - name: Configure CMake with vcpkg toolchain
         run: |
           mkdir build
           cd build
-          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"  
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake -DPATCH_VERSION=${{ github.run_number }}
 
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
 
 
       - name: Build
         run: |
-          cmake --build .
+          cmake --build . 
           cmake --build . --target test
           cmake --build . --target package
         
