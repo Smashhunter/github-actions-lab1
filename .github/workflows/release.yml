@@ -59,4 +59,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: cmd
         run: |
-          gh release upload v0.1.${{ github.run_number }} build/helloworld-0.1.${{ github.run_number }}-win64.zip
+          gh release upload v0.1.${{ github.run_number }} build/helloworld-0.0.${{ github.run_number }}-win64.zip
