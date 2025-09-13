@@ -45,12 +45,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Install vcpkg and dependencies
+      - name: Install vcpkg
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
-          ./bootstrap-vcpkg.bat
-          ./vcpkg install boost-test:x64-windows
+          .\bootstrap-vcpkg.bat
+
+      - name: Install dependencies
+        run: .\vcpkg\vcpkg install --triplet=x64-windows  
 
       - name: Cache vcpkg
         uses: actions/cache@v3
@@ -59,16 +61,11 @@ jobs:
           key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
           restore-keys: ${{ runner.os }}-vcpkg-
 
-      - name: Install dependencies
-        run: .\vcpkg\vcpkg install --triplet=x64-windows
-
       - name: Configure CMake with vcpkg toolchain
         run: |
           mkdir build
           cd build
           cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake -DPATCH_VERSION=${{ github.run_number }}
-
-      - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
 
 
       - name: Build
